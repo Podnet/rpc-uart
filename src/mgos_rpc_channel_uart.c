@@ -64,7 +64,7 @@ struct mg_rpc_channel_uart_data {
  * If caller supplies CRC, it will get CRC on the frames sent in its direction.
  */
 
-static bool is_empty_frame(const struct mg_str f) {
+bool is_empty_frame(const struct mg_str f) {
   for (size_t i = 0; i < f.len; i++) {
     if (!isspace((int) f.p[i])) return false;
   }
@@ -183,7 +183,7 @@ void mg_rpc_channel_uart_dispatcher(int uart_no, void *arg) {
   }
 }
 
-static void mg_rpc_channel_uart_ch_connect(struct mg_rpc_channel *ch) {
+void mg_rpc_channel_uart_ch_connect(struct mg_rpc_channel *ch) {
   struct mg_rpc_channel_uart_data *chd =
       (struct mg_rpc_channel_uart_data *) ch->channel_data;
   if (!chd->connected) {
@@ -194,7 +194,7 @@ static void mg_rpc_channel_uart_ch_connect(struct mg_rpc_channel *ch) {
   }
 }
 
-static bool mg_rpc_channel_uart_send_frame(struct mg_rpc_channel *ch,
+bool mg_rpc_channel_uart_send_frame(struct mg_rpc_channel *ch,
                                            const struct mg_str f) {
   struct mg_rpc_channel_uart_data *chd =
       (struct mg_rpc_channel_uart_data *) ch->channel_data;
@@ -228,7 +228,7 @@ static bool mg_rpc_channel_uart_send_frame(struct mg_rpc_channel *ch,
   return true;
 }
 
-static void mg_rpc_channel_uart_ch_close(struct mg_rpc_channel *ch) {
+void mg_rpc_channel_uart_ch_close(struct mg_rpc_channel *ch) {
   struct mg_rpc_channel_uart_data *chd =
       (struct mg_rpc_channel_uart_data *) ch->channel_data;
   mgos_uart_set_dispatcher(chd->uart_no, NULL, NULL);
@@ -237,7 +237,7 @@ static void mg_rpc_channel_uart_ch_close(struct mg_rpc_channel *ch) {
   ch->ev_handler(ch, MG_RPC_CHANNEL_CLOSED, NULL);
 }
 
-static void mg_rpc_channel_uart_ch_destroy(struct mg_rpc_channel *ch) {
+void mg_rpc_channel_uart_ch_destroy(struct mg_rpc_channel *ch) {
   struct mg_rpc_channel_uart_data *chd =
       (struct mg_rpc_channel_uart_data *) ch->channel_data;
   mbuf_free(&chd->recv_mbuf);
@@ -246,12 +246,12 @@ static void mg_rpc_channel_uart_ch_destroy(struct mg_rpc_channel *ch) {
   free(ch);
 }
 
-static const char *mg_rpc_channel_uart_get_type(struct mg_rpc_channel *ch) {
+const char *mg_rpc_channel_uart_get_type(struct mg_rpc_channel *ch) {
   (void) ch;
   return "UART";
 }
 
-static bool mg_rpc_channel_uart_get_authn_info(
+bool mg_rpc_channel_uart_get_authn_info(
     struct mg_rpc_channel *ch, const char *auth_domain, const char *auth_file,
     struct mg_rpc_authn_info *authn) {
   (void) ch;
@@ -262,7 +262,7 @@ static bool mg_rpc_channel_uart_get_authn_info(
   return false;
 }
 
-static char *mg_rpc_channel_uart_get_info(struct mg_rpc_channel *ch) {
+char *mg_rpc_channel_uart_get_info(struct mg_rpc_channel *ch) {
   struct mg_rpc_channel_uart_data *chd =
       (struct mg_rpc_channel_uart_data *) ch->channel_data;
   char *res = NULL;
